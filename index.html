@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FM 26</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:linear-gradient(180deg,#e8edf3 0%,#dde4ed 100%);color:#1a2233;padding:12px;font-size:13px;min-height:100vh}
+#app{max-width:520px;margin:0 auto}
+h2{color:#0d8a4e;font-size:17px;margin:8px 0;font-weight:800}
+h3{color:#0d8a4e;font-size:14px;margin:6px 0;font-weight:700}
+.btn{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:10px 14px;border-radius:11px;font-size:12px;margin:2px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(16,185,129,.28);transition:.15s}
+.btn:active{transform:scale(.97);box-shadow:0 1px 4px rgba(16,185,129,.3)}
+.btn.full{width:100%}
+.btn.sec{background:#fff;color:#4b5563;box-shadow:0 2px 6px rgba(0,0,0,.08);border:1px solid #d1d9e0}
+.btn.sec:hover{background:#f7f9fc}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.red{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 3px 10px rgba(239,68,68,.28)}
+.btn.gold{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 3px 10px rgba(245,158,11,.3)}
+.screen{display:none;padding:4px}
+.screen.on{display:block;animation:fi .25s ease-out}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card{background:#fff;border:1px solid #e2e8f0;padding:13px;border-radius:14px;margin:7px 0;box-shadow:0 2px 8px rgba(30,41,59,.06)}
+.club{background:#fff;border:1px solid #e2e8f0;color:#1a2233;padding:11px 13px;border-radius:12px;font-size:12px;margin:4px 0;text-align:left;width:100%;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center;gap:8px;box-shadow:0 1px 3px rgba(30,41,59,.04)}
+.club:hover{border-color:#10b981;transform:translateY(-1px);box-shadow:0 4px 12px rgba(16,185,129,.15)}
+.club.sel{background:linear-gradient(135deg,#10b981,#059669);border-color:#0d8a4e;color:#fff}
+.club .nm{font-weight:800;font-size:13px}
+.club .mt{font-size:10px;color:#0d8a4e;margin-top:2px;font-weight:600}
+.club.sel .mt{color:#dcfce7}
+.big{font-size:24px;font-weight:900;text-align:center;margin:6px 0;color:#1a2233;letter-spacing:-.5px}
+.min{font-size:36px;font-weight:900;text-align:center;color:#10b981;font-family:'SF Mono',Consolas,monospace;text-shadow:0 2px 12px rgba(16,185,129,.35);letter-spacing:-1px}
+.ev{padding:8px 10px;border-radius:9px;margin:4px 0;font-size:11px;background:#f7f9fc;font-weight:500;border:1px solid #e2e8f0}
+.ev.g{border-left:4px solid #10b981;background:linear-gradient(90deg,rgba(16,185,129,.1),#f7f9fc);font-weight:700}
+.ev.o{border-left:4px solid #ef4444;background:linear-gradient(90deg,rgba(239,68,68,.1),#f7f9fc);font-weight:700}
+.ev.i{border-left:4px solid #3b82f6;color:#6b7280}
+.pr{display:flex;justify-content:space-between;padding:9px 11px;border-bottom:1px solid #f1f5f9;background:#fff;border-radius:10px;margin:3px 0;font-size:11px;align-items:center;gap:8px;border:1px solid #e2e8f0}
+.pr:last-child{border-bottom:1px solid #e2e8f0}
+table{width:100%;border-collapse:collapse;font-size:10px;background:#fff;border-radius:10px;overflow:hidden}
+th,td{padding:6px;text-align:left;border-bottom:1px solid #f1f5f9}
+th{color:#0d8a4e;font-weight:800;background:#f0fdf4;font-size:9px;text-transform:uppercase;letter-spacing:.3px}
+.tabs{display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap}
+.tabs .btn{padding:7px 10px;font-size:10px}
+.rt{background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:3px 8px;border-radius:7px;font-weight:900;font-size:11px;display:inline-block;min-width:30px;text-align:center}
+.rt.hi{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.rt.mid{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.post{background:#fff;border-left:4px solid #10b981;padding:10px 12px;border-radius:10px;margin:6px 0;font-size:11px;box-shadow:0 1px 4px rgba(30,41,59,.06);border:1px solid #e2e8f0}
+.post .meta{color:#0d8a4e;font-size:10px;font-weight:800;margin-bottom:4px}
+.post.neg{border-left-color:#ef4444}
+.post.neg .meta{color:#dc2626}
+.post.cl{border-left-color:#f59e0b;background:linear-gradient(90deg,rgba(245,158,11,.08),#fff)}
+.post.cl .meta{color:#b45309}
+.trophy{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#422006;padding:16px;border-radius:14px;margin:7px 0;text-align:center;font-weight:800;box-shadow:0 6px 20px rgba(245,158,11,.35);font-size:13px}
+.q{font-style:italic;color:#4b5563;font-size:13px;line-height:1.5}
+.tag{display:inline-block;background:#ecfdf5;color:#0d8a4e;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-left:4px;border:1px solid #a7f3d0}
+.tag.gray{background:#f1f5f9;color:#6b7280;border-color:#e2e8f0}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="s-menu" class="screen on">
+<h2 style="text-align:center;font-size:24px;margin-top:20px">⚽ FM 26</h2>
+<div class="card" style="text-align:center;padding:20px">
+<p style="color:#6b7280;margin-bottom:14px;font-size:12px">Карьера тренера</p>
+<button class="btn full" onclick="goLiga()">🏆 Новая карьера</button>
+</div></div>
+
+<div id="s-liga" class="screen">
+<h2>Выбор лиги</h2>
+<div id="ligaList"></div></div>
+
+<div id="s-klub" class="screen">
+<h2 id="lgTitle">Клуб</h2>
+<div id="klubList"></div>
+<button class="btn full" id="okBtn" disabled onclick="goHub()">Возглавить клуб</button>
+<button class="btn sec full" onclick="show('s-liga')">‹ Назад</button></div>
+
+<div id="s-hub" class="screen">
+<div id="hubTop"></div>
+<div class="tabs" id="hubTabs"></div>
+<div id="hubView"></div></div>
+
+<div id="s-match" class="screen">
+<div class="card">
+<div class="big" id="mScore">0 — 0</div>
+<div class="min" id="mMin">1'</div>
+<div style="text-align:center;color:#6b7280;font-size:11px;font-weight:600" id="mTeams"></div>
+</div>
+<div id="mEvents"></div>
+<div id="mActions" style="text-align:center"></div></div>
+
+<div id="s-neg" class="screen"><h2>💰 Переговоры</h2><div id="negBody"></div></div>
+<div id="s-sell" class="screen"><h2>💸 Продажа</h2><div id="sellBody"></div></div>
+<div id="s-iv" class="screen"><h2>🎤 Интервью</h2><div id="ivBody"></div></div>
+
+</div>
+
+<script>
+  var L={
+"Ла Лига":[["Барселона",88,120],["Реал Мадрид",90,150],["Атлетико",83,70],["Атлетик",80,45],["Вильярреал",79,40],["Бетис",78,35],["Реал Сосьедад",78,40],["Жирона",77,35],["Севилья",78,40],["Валенсия",76,30],["Сельта",76,25],["Осасуна",74,20],["Мальорка",74,20],["Райо Вальекано",73,15]],
+"АПЛ":[["Ман Сити",91,160],["Ливерпуль",87,120],["Арсенал",85,100],["Челси",83,130],["Тоттенхэм",80,80],["Ньюкасл",79,90],["Астон Вилла",79,70],["МЮ",82,140],["Брайтон",77,50],["Эвертон",74,40],["Кристал Пэлас",76,45],["Вест Хэм",77,55],["Борнмут",75,40],["Фулхэм",76,45],["Брентфорд",76,40],["Вулверхэмптон",74,35]],
+"Бундеслига":[["Бавария",89,140],["Боруссия Д",83,70],["Байер",84,60],["РБ Лейпциг",81,65],["Штутгарт",79,40],["Айнтрахт",76,35],["Вольфсбург",75,30],["Фрайбург",75,25]],
+"Серия А":[["Интер",85,80],["Милан",82,85],["Ювентус",83,90],["Наполи",82,75],["Аталанта",79,45],["Рома",78,45],["Лацио",77,40],["Фиорентина",77,35],["Болонья",76,30],["Торино",74,25]],
+"Лига 1":[["ПСЖ",88,180],["Монако",78,50],["Марсель",78,50],["Лион",76,40],["Лилль",77,35],["Ницца",76,35],["Ренн",75,30]],
+"УПЛ":[["Шахтёр",76,40],["Динамо Киев",75,35],["Днепр-1",72,15],["Заря",71,10]],
+"Примейра":[["Порту",80,45],["Бенфика",80,50],["Спортинг",79,45],["Брага",76,25]],
+"Суперлига Турции":[["Галатасарай",80,50],["Фенербахче",80,45],["Бешикташ",77,30],["Трабзонспор",75,25]],
+"Эредивизи":[["ПСВ",80,50],["Фейеноорд",78,45],["Аякс",79,50],["АЗ",76,25]],
+"Чемпионшип":[["Лидс",72,25],["Лестер",73,28],["Саутгемптон",71,22],["Сандерленд",70,20],["Норвич",69,18]]};
+
+var SQ={
+"Барселона":[["Жуан Гарсия",84,24],["Щенсны",86,35],["Кубарси",80,19],["Эрик Гарсия",80,25],["Кристенсен",82,30],["Бальде",82,22],["Кунде",84,27],["Канселу",82,31],["Родри",88,29],["Педри",87,23],["де Йонг",85,28],["Гави",82,21],["Фермин",80,22],["Ольмо",84,27],["Гордон",84,25],["Ямаль",88,18],["Адейеми",84,24],["Рафинья",86,29],["Габриэл Жезус",84,28]],
+"Реал Мадрид":[["Куртуа",89,34],["Лунин",84,27],["Хёйсен",82,21],["Конате",86,27],["Асенсио",80,23],["Милитао",84,28],["Рюдигер",85,33],["Кукурелья",83,28],["Менди",82,31],["Трент",86,27],["Дюмфрис",84,30],["Чуамени",84,26],["Вальверде",87,28],["Камавинга",82,23],["Беллингем",90,23],["Гюлер",78,21],["Бернарду Силва",86,32],["Винисиус",90,26],["Родриго",86,25],["Браим Диас",84,27],["Мбаппе",91,27]],
+"Атлетико":[["Облак",88,33],["Муссо",82,32],["Ганцко",82,28],["Лангле",82,30],["Ле Норман",82,29],["Льоренте",82,32],["Молина",82,27],["Хименес",84,30],["Коке",84,33],["Барриос",82,22],["Кардозо",80,24],["Н.Гонсалес",80,27],["Гризманн",86,34],["Альварес",85,25],["Сёрлот",82,30],["Лукман",85,28],["Симеоне",78,23]],
+"Атлетик":[["Уильямс",83,23],["Сансет",82,25],["Симон",83,31],["Гурусета",80,26]],
+"Вильярреал":[["Морено",82,31],["Пино",80,23],["Парехо",80,37],["Фойт",79,27]],
+"Бетис":[["Иско",80,34],["Фекир",80,32],["Руибаль",78,29],["Бартра",78,35]],
+"Реал Сосьедад":[["Оярсабаль",83,29],["Кубо",82,24],["Субименди",83,26],["Ремиро",80,31]],
+"Жирона":[["Стуани",78,38],["Цыганков",78,28],["Довбик",82,28],["Блинд",80,35]],
+"Севилья":[["Окампос",80,31],["Лукаку",84,32],["Гудель",80,28],["Ракитич",80,37]],
+"Валенсия":[["Дуро",78,26],["Пеплу",76,27],["Альмейда",76,25],["Гайя",78,30]],
+"Сельта":[["Аспас",82,38],["Сведберг",78,26],["Мингеса",78,27]],
+"Осасуна":[["Будимир",78,24],["Торро",76,29]],
+"Мальорка":[["Мурики",78,31],["Д.Родригес",76,27]],
+"Райо Вальекано":[["Трехо",76,33],["Камельо",75,29]],
+"Ман Сити":[["Эдерсон",87,32],["Холанд",91,25],["Де Брёйне",89,34],["Фоден",87,25],["Диаш",87,28],["Хусанов",78,21],["Б.Силва",86,31],["Грилиш",83,30]],
+"Ливерпуль":[["Алиссон",88,33],["Салах",89,33],["Ван Дейк",88,34],["Диас",85,29],["Жота",84,28],["Арнольд",86,27],["Собослаи",84,25]],
+"Арсенал":[["Сака",88,24],["Эдегор",87,27],["Райс",86,27],["Салиба",85,24],["Мартинелли",84,24]],
+"Челси":[["Палмер",86,23],["Энцо",84,24],["Каиседо",84,24],["Джеймс",82,26],["Джексон",81,24]],
+"Тоттенхэм":[["Сон",86,33],["Мэддисон",84,29],["Ромеро",84,27],["ван де Вен",80,24]],
+"Ньюкасл":[["Исак",86,26],["Гимараес",84,28],["Гордон",84,24],["Триппьер",82,35]],
+"Астон Вилла":[["Уоткинс",84,29],["Роджерс",82,23],["МакГинн",82,31]],
+"МЮ":[["Бруну",86,31],["Рашфорд",82,28],["Гарначо",82,21],["Онана",82,29]],
+"Брайтон":[["Митьома",82,28],["Уэлбек",80,34]],
+"Эвертон":[["Дукуре",80,26],["Пикфорд",84,31]],
+"Кристал Пэлас":[["Эзе",83,27],["Гехи",82,26]],
+"Вест Хэм":[["Боуэн",84,28],["Кудус",82,25]],
+"Борнмут":[["Семеньо",80,25],["Эванилсон",80,27],["Керкез",78,22]],
+"Фулхэм":[["Хименес",82,34],["Уилсон",80,28],["Перейра",79,29]],
+"Брентфорд":[["Мбёмо",81,26],["Висса",80,28],["Тони",80,30]],
+"Вулверхэмптон":[["Кунья",82,26],["Сарабия",80,33],["Нету",79,23]],
+"Бавария":[["Нойер",86,39],["Кейн",90,32],["Мусиала",88,22],["Киммих",86,30],["Олисе",82,24]],
+"Боруссия Д":[["Кобель",80,20],["Адейеми",84,23],["Брандт",84,29]],
+"Байер":[["Вирц",88,22],["Шик",82,29],["Гримальдо",84,28]],
+"РБ Лейпциг":[["Опенда",82,25],["Шешко",82,22]],
+"Штутгарт":[["Ундав",82,29],["Мийо",80,27]],
+"Айнтрахт":[["Мармуш",82,26],["Экитике",82,23]],
+"Вольфсбург":[["Винд",80,26],["Амаду",76,24]],
+"Фрайбург":[["Грифит",80,28],["Хёлер",78,31]],
+"Интер":[["Зоммер",86,37],["Лаутаро",88,28],["Тюрам",84,28],["Барелла",86,28],["Чалханоглу",85,31]],
+"Милан":[["Меньян",85,30],["Леау",86,26],["Пулишич",84,27],["Эрнандес",86,28]],
+"Ювентус":[["Влахович",84,25],["Кьеза",83,27],["Бремер",84,28]],
+"Наполи":[["Лукаку",84,32],["Кварацхелия",85,24]],
+"Аталанта":[["Лукман",85,28],["Ретеги",82,26]],
+"Рома":[["Дибала",85,32],["Лукаку",84,32]],
+"Лацио":[["Дзакканьи",82,30],["Кастельянос",80,27]],
+"Фиорентина":[["Кен",82,27],["Гюдмундссон",80,28]],
+"Болонья":[["Орсолини",80,29],["Кастро",80,21]],
+"Торино":[["Запата",80,33],["Влашич",79,27]],
+"ПСЖ":[["Доннарумма",85,26],["Дембеле",86,28],["Кварацхелия",85,24],["Баркола",82,23],["Хакими",84,27],["Витинья",84,26],["Маркиньос",85,31]],
+"Монако":[["Бен Йеддер",82,35],["Минамино",82,30]],
+"Марсель":[["Обамеянг",82,36],["Гринвуд",82,24]],
+"Лион":[["Ляказетт",82,34],["Шерки",82,22]],
+"Лилль":[["Дэвид",84,26],["Каба",78,29]],
+"Ницца":[["Гессан",80,26],["Клосс",78,32]],
+"Ренн":[["Калимуэндо",80,24],["Санте",78,31]],
+"Шахтёр":[["Судаков",78,23],["Траоре",75,25],["Сикан",76,24]],
+"Динамо Киев":[["Ярмоленко",78,35],["Ванат",74,22],["Шапаренко",76,27]],
+"Днепр-1":[["Довбик",82,28],["Пихаленок",74,28]],
+"Заря":[["Бурда",72,29],["Мичин",70,22]],
+"Порту":[["Галено",80,27],["Пепе",78,28]],
+"Бенфика":[["Отаменди",82,37],["Ди Мария",82,37],["Павлидис",79,27]],
+"Спортинг":[["Дьёкереш",85,27],["Тринкан",80,26]],
+"Брага":[["Оливейра",79,30],["Наварро",76,25]],
+"Галатасарай":[["Икарди",82,32],["Осимхен",84,27]],
+"Фенербахче":[["Эн-Несири",82,28],["Джеко",82,39]],
+"Бешикташ":[["Иммобиле",82,35],["Рашица",80,28]],
+"Трабзонспор":[["Онуачу",79,30],["Вишча",79,32]],
+"ПСВ":[["Де Йонг",80,28],["Баккайоко",77,27]],
+"Фейеноорд":[["Стенгс",79,26],["Гименес",82,24]],
+"Аякс":[["Бробби",76,23],["Бергвейн",78,27]],
+"АЗ":[["Парротт",78,24],["Мейнанс",77,26]],
+"Лидс":[["Бэмфорд",76,28],["Гнонто",74,22]],
+"Лестер":[["Варди",78,37],["Мавидиди",76,26]],
+"Саутгемптон":[["Армстронг",76,29],["Уорд-Проуз",78,31]],
+"Сандерленд":[["Исидор",74,26],["Кларк",72,24]],
+"Норвич":[["Сарджент",74,25],["Барнс",74,27]]};
+
+var GKS=["Жуан Гарсия","Щенсны","Куртуа","Лунин","Облак","Муссо","Симон","Ремиро","Нойер","Эдерсон","Алиссон","Онана","Меньян","Зоммер","Доннарумма","Пикфорд","Кобель"];
+
+var MK=[["Холанд",91,25,"Ман Сити",160],["Мбаппе",91,27,"Реал Мадрид",180],["Винисиус",90,26,"Реал Мадрид",150],["Беллингем",90,23,"Реал Мадрид",180],["Ямаль",88,18,"Барселона",200],["Сака",88,24,"Арсенал",140],["Кейн",90,32,"Бавария",90],["Салах",89,33,"Ливерпуль",60],["Родри",88,29,"Барселона",130],["Вирц",88,22,"Байер",150],["Лаутаро",88,28,"Интер",90],["Палмер",86,23,"Челси",120],["Фоден",87,25,"Ман Сити",130],["Эдегор",87,27,"Арсенал",100],["Мусиала",88,22,"Бавария",130],["Дембеле",86,28,"ПСЖ",70],["Кварацхелия",85,24,"Наполи",90],["Исак",86,26,"Ньюкасл",110],["Дьёкереш",85,27,"Спортинг",80],["Гризманн",86,34,"Атлетико",30],["Альварес",85,25,"Атлетико",90],["Бруну",86,31,"МЮ",70],["Трент",86,27,"Реал Мадрид",80],["Гюлер",78,21,"Реал Мадрид",50],["Судаков",78,23,"Шахтёр",35],["Ван Дейк",88,34,"Ливерпуль",40],["Рюдигер",85,33,"Реал Мадрид",30],["Де Брёйне",89,34,"Ман Сити",30],["Осимхен",84,27,"Галатасарай",75],["Икарди",82,32,"Галатасарай",20],["Митьома",82,28,"Брайтон",45],["Эзе",83,27,"Кристал Пэлас",55],["Боуэн",84,28,"Вест Хэм",60],["Дукуре",80,26,"Эвертон",35],["Экитике",82,23,"Айнтрахт",70],["Мармуш",82,26,"Айнтрахт",45],["Павлидис",79,27,"Бенфика",40],["Ди Мария",82,37,"Бенфика",10],["Галено",80,27,"Порту",40],["Бен Йеддер",82,35,"Монако",15],["Минамино",82,30,"Монако",40],["Ярмоленко",78,35,"Динамо Киев",10],["Ванат",74,22,"Динамо Киев",15],["Шапаренко",76,27,"Динамо Киев",20],["Траоре",75,25,"Шахтёр",15],["Сикан",76,24,"Шахтёр",18],["Гринвуд",82,24,"Марсель",50],["Обамеянг",82,36,"Марсель",10],["Шерки",82,22,"Лион",60],["Ляказетт",82,34,"Лион",10],["Иммобиле",82,35,"Бешикташ",10],["Эн-Несири",82,28,"Фенербахче",40],["Джеко",82,39,"Фенербахче",5],["Уэлбек",80,34,"Брайтон",15],["Гехи",82,26,"Кристал Пэлас",40],["Кудус",82,25,"Вест Хэм",45],["Гимараес",84,28,"Ньюкасл",70],["МакГинн",82,31,"Астон Вилла",30],["Джексон",81,24,"Челси",50],["Семеньо",80,25,"Борнмут",40],["Эванилсон",80,27,"Борнмут",35],["Керкез",78,22,"Борнмут",25],["Хименес",82,34,"Фулхэм",15],["Уилсон",80,28,"Фулхэм",30],["Перейра",79,29,"Фулхэм",25],["Мбёмо",81,26,"Брентфорд",40],["Висса",80,28,"Брентфорд",35],["Тони",80,30,"Брентфорд",30],["Кунья",82,26,"Вулверхэмптон",45],["Сарабия",80,33,"Вулверхэмптон",15],["Нету",79,23,"Вулверхэмптон",30],["Кен",82,27,"Фиорентина",50],["Гюдмундссон",80,28,"Фиорентина",30],["Орсолини",80,29,"Болонья",25],["Кастро",80,21,"Болонья",40],["Запата",80,33,"Торино",15],["Влашич",79,27,"Торино",25],["Дэвид",84,26,"Лилль",70],["Каба",78,29,"Лилль",20],["Гессан",80,26,"Ницца",30],["Клосс",78,32,"Ренн",10],["Калимуэндо",80,24,"Ренн",45],["Санте",78,31,"Ренн",15],["Оливейра",79,30,"Брага",20],["Наварро",76,25,"Брага",15],["Онуачу",79,30,"Трабзонспор",18],["Вишча",79,32,"Трабзонспор",12],["Парротт",78,24,"АЗ",25],["Мейнанс",77,26,"АЗ",22],["Бэмфорд",76,28,"Лидс",18],["Гнонто",74,22,"Лидс",15],["Варди",78,37,"Лестер",5],["Мавидиди",76,26,"Лестер",15],["Армстронг",76,29,"Саутгемптон",15],["Уорд-Проуз",78,31,"Саутгемптон",20],["Исидор",74,26,"Сандерленд",12],["Кларк",72,24,"Сандерленд",10],["Сарджент",74,25,"Норвич",12],["Барнс",74,27,"Норвич",12],["Стенгс",79,26,"Фейеноорд",25],["Гименес",82,24,"Фейеноорд",55],["Де Йонг",80,28,"ПСВ",30],["Баккайоко",77,27,"ПСВ",18],["Бробби",76,23,"Аякс",20],["Бергвейн",78,27,"Аякс",25],["Мактоминей",83,29,"Наполи",30],["Ретеги",82,26,"Аталанта",55],["Дзаппакоста",80,33,"Аталанта",10],["Пеллегрини",80,29,"Рома",20],["Дзакканьи",82,30,"Лацио",35],["Кастельянос",80,27,"Лацио",30],["Гендузи",80,26,"Лацио",25]];
+
+var GKSET={};for(var gi=0;gi<GKS.length;gi++)GKSET[GKS[gi]]=true;
+var RIV={"Барселона":["Реал Мадрид"],"Реал Мадрид":["Барселона","Атлетико"],"Атлетико":["Реал Мадрид"],"Ман Сити":["Ливерпуль","МЮ"],"Ливерпуль":["Ман Сити","МЮ"],"Арсенал":["Челси","Тоттенхэм"],"Челси":["Арсенал","Тоттенхэм"],"Тоттенхэм":["Арсенал","Челси"],"Интер":["Милан","Ювентус"],"Милан":["Интер","Ювентус"],"Ювентус":["Интер","Милан"],"Бавария":["Боруссия Д"],"Боруссия Д":["Бавария"],"ПСЖ":["Марсель"],"Марсель":["ПСЖ"]};
+var RICH=["ПСЖ","Ман Сити","Реал Мадрид","Челси","МЮ","Бавария","Арсенал","Ливерпуль","Ювентус","Ньюкасл","Астон Вилла","Интер","Барселона","Милан"];
+
+var AUTHORS=["@SportsDaily","@PressZone","@TransferKing","@UltraFans","@GoalAlert","@CoachCorner","@FootballInsider","@FanTV"];
+var IVQ=[
+{q:"Как оцените игру команды в этом сезоне?",a:[{t:"Показываем отличный футбол!",tru:8,fan:10},{t:"Есть над чем работать.",tru:3,fan:2},{t:"Игра ужасная, я разочарован.",tru:-12,fan:-15}]},
+{q:"Что скажете про главного конкурента?",a:[{t:"Мы сильнее их.",tru:5,fan:10},{t:"Уважаю, но победим.",tru:2,fan:3},{t:"Они лучше нас.",tru:-8,fan:-12}]},
+{q:"Довольны трансферной кампанией?",a:[{t:"Подписали топ-игроков!",tru:6,fan:11},{t:"Рассмотрим варианты.",tru:3,fan:3},{t:"Никого не купили.",tru:-10,fan:-10}]},
+{q:"Как настрой на дерби?",a:[{t:"Разорвём их!",tru:5,fan:13},{t:"Готовимся серьёзно.",tru:4,fan:5},{t:"Обычный матч для меня.",tru:-8,fan:-14}]},
+{q:"Что скажете болельщикам?",a:[{t:"Потерпите, строим команду.",tru:4,fan:4},{t:"Понимаю их недовольство.",tru:5,fan:7},{t:"Мне всё равно.",tru:-12,fan:-20}]}];
+
+var curLg="",selC=null,st=null,view='squad',world=[],tbl=[],scorers=[],mOpp=null,mMin=1,mMy=0,mTh=0,mPause=false,timer=null,mLine=[],mOppSq=[],mMyStr=80,mOppStr=80,filterAge=0,filterRating=0,mCup=null;
+
+function rnd(n){return Math.floor(Math.random()*n)}
+function show(id){var a=document.querySelectorAll('.screen');for(var i=0;i<a.length;i++)a[i].classList.remove('on');document.getElementById(id).classList.add('on');window.scrollTo(0,0)}
+function lgOf(c){for(var k in L)for(var i=0;i<L[k].length;i++)if(L[k][i][0]===c)return k;return "?"}
+function cupOf(str){if(str>=85)return "Лига Чемпионов";if(str>=77)return "Лига Европы";if(str>=70)return "Лига Конференций";return ""}
+
+function goLiga(){var b=document.getElementById('ligaList');b.innerHTML='';
+for(var k in L){(function(lg){var x=document.createElement('button');x.className='club';
+x.innerHTML='<div><div class="nm">'+lg+'</div><div class="mt">'+L[lg].length+' клубов</div></div><div style="font-size:18px;color:#10b981">›</div>';
+x.onclick=function(){curLg=lg;goKlubi()};b.appendChild(x)})(k)}show('s-liga')}
+
+function goKlubi(){document.getElementById('lgTitle').textContent=curLg;
+var b=document.getElementById('klubList');b.innerHTML='';selC=null;document.getElementById('okBtn').disabled=true;
+for(var i=0;i<L[curLg].length;i++){(function(c){var x=document.createElement('button');x.className='club';
+x.innerHTML='<div><div class="nm">'+c[0]+'</div><div class="mt">⚡ '+c[1]+' · €'+c[2]+'M</div></div>';
+x.onclick=function(){var a=document.querySelectorAll('#klubList .club');for(var j=0;j<a.length;j++)a[j].classList.remove('sel');
+x.classList.add('sel');selC=c;document.getElementById('okBtn').disabled=false};b.appendChild(x)})(L[curLg][i])}
+show('s-klub')}
+  function goHub(){
+st={name:selC[0],str:selC[1],budget:selC[2],week:0,trust:80,goals:0,conc:0,oppIdx:0,players:[],social:[],trophies:[],ticketPrice:30,cup:null};
+var real=SQ[selC[0]];if(real)for(var i=0;i<real.length;i++)st.players.push({name:real[i][0],rating:real[i][1],age:real[i][2],goals:0});
+while(st.players.length<14)st.players.push({name:"Игрок "+(st.players.length+1),rating:70+rnd(10),age:20+rnd(10),goals:0});
+world=[];for(var m=0;m<MK.length;m++)world.push({name:MK[m][0],rating:MK[m][1],age:MK[m][2],club:MK[m][3],price:MK[m][4]});
+tbl=[];var arr=L[curLg];for(var t=0;t<arr.length;t++)tbl.push({name:arr[t][0],str:arr[t][1],p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});
+scorers=[];
+for(var c=0;c<arr.length;c++){var cn=arr[c][0];var sq=SQ[cn]||[];
+for(var p=0;p<sq.length;p++){if(sq[p][1]>=76&&!GKSET[sq[p][0]])scorers.push({name:sq[p][0],club:cn,goals:0,rating:sq[p][1]})}}
+mCup=cupOf(st.str);
+pushPost("@SportsDaily","Новый сезон! "+st.name+" стартует в "+curLg+(mCup?" и "+mCup:"")+".");
+view='squad';renderHub();show('s-hub')}
+
+function pushPost(a,t,neg,cl){st.social.unshift({author:a,text:t,neg:neg,cl:cl,week:st.week});if(st.social.length>80)st.social.pop()}
+
+function genPosts(n){var arr=L[curLg];for(var i=0;i<n;i++){
+var a=AUTHORS[rnd(AUTHORS.length)];var type=rnd(8);
+if(type===0){var sc=scorers.slice().sort(function(a,b){return b.goals-a.goals})[0];if(!sc)continue;
+pushPost(a,"🔥 "+sc.name+" ("+sc.club+") в огне! "+sc.goals+" голов в сезоне.",false)}
+else if(type===1){var r=arr[rnd(arr.length)];var oc=arr[rnd(arr.length)];if(r[0]===oc[0])continue;
+pushPost(a,"🏆 В эти выходные "+r[0]+" против "+oc[0]+". Матч тура!",false)}
+else if(type===2){var club=arr[rnd(arr.length)];
+pushPost(a,"📉 "+club[0]+" нестабильна. Тренер под давлением.",true)}
+else if(type===3){var club2=arr[rnd(arr.length)];
+pushPost(a,"⚡ "+club2[0]+" показывает зрелищный футбол!",false)}
+else if(type===4){var young=null;
+for(var c=0;c<arr.length;c++){var sq=SQ[arr[c][0]]||[];for(var p=0;p<sq.length;p++){if(sq[p][2]<=21&&sq[p][1]>=80)young={name:sq[p][0],club:arr[c][0],age:sq[p][2]}}}
+if(young)pushPost(a,"🌟 Молодой талант! "+young.name+" ("+young.age+" лет, "+young.club+")",false)}
+else if(type===5){var t2=tbl.slice().sort(function(x,y){return y.pts-x.pts})[0];
+if(t2)pushPost(a,"📊 "+t2.name+" лидирует в "+curLg+"!",false)}
+else if(type===6){var c4=arr[rnd(arr.length)];if(c4[0]===st.name)continue;
+pushPost(a,"🗞️ Тренер "+c4[0]+": «Нацелены на победу».",false)}
+else{var c5=arr[rnd(arr.length)];pushPost(a,"💬 Аналитики: "+c5[0]+" — тёмная лошадка.",false)}}}
+
+function renderHub(){
+var tabs=[['squad','👥 Состав'],['transfers','💰 Трансферы'],['table','📊 Таблица'],['scorers','🥇 Бомбардиры'],['social','📱 Соцсети'],['match','⚽ Матч'],['econ','💵 Экономика'],['trophies','🏆 Трофеи'],['cup','🏆 Еврокубок']];
+var th='';for(var i=0;i<tabs.length;i++)th+='<button class="btn '+(view===tabs[i][0]?'':'sec')+'" onclick="setV(\''+tabs[i][0]+'\')">'+tabs[i][1]+'</button>';
+document.getElementById('hubTop').innerHTML='<div class="card" style="margin-bottom:6px"><b>'+st.name+'</b> · Тур '+st.week+' · €'+st.budget+'M · Доверие '+st.trust+'%'+(mCup?' · 🏆 '+mCup:'')+'</div>';
+document.getElementById('hubTabs').innerHTML=th;renderV()}
+
+function setV(v){view=v;renderHub()}
+function renderV(){var b=document.getElementById('hubView');var h='';
+if(view==='squad'){h+='<div class="card"><b>Состав ('+st.players.length+')</b></div>';
+for(var i=0;i<st.players.length;i++){var p=st.players[i];var rc=p.rating>=87?'hi':(p.rating>=78?'mid':'');
+h+='<div class="pr"><div><b>'+p.name+'</b> · '+p.age+' лет · ⚽'+p.goals+'</div><div><span class="rt '+rc+'">'+p.rating+'</span> <button class="btn red" style="padding:4px 8px;font-size:10px" onclick="sellMy('+i+')">Продать</button></div></div>'}}
+if(view==='transfers'){
+h+='<div class="card"><b>💰 Рынок</b> · Бюджет: €'+st.budget+'M</div>';
+h+='<div class="card"><b>Фильтр:</b><br>Возраст: <button class="btn '+(filterAge===0?'':'sec')+'" onclick="setF(\'age\',0)">Все</button><button class="btn '+(filterAge===1?'':'sec')+'" onclick="setF(\'age\',1)">≤21</button><button class="btn '+(filterAge===2?'':'sec')+'" onclick="setF(\'age\',2)">22-27</button><button class="btn '+(filterAge===3?'':'sec')+'" onclick="setF(\'age\',3)">28+</button><br>Рейтинг: <button class="btn '+(filterRating===0?'':'sec')+'" onclick="setF(\'rat\',0)">Все</button><button class="btn '+(filterRating===1?'':'sec')+'" onclick="setF(\'rat\',1)">70+</button><button class="btn '+(filterRating===2?'':'sec')+'" onclick="setF(\'rat\',2)">80+</button><button class="btn '+(filterRating===3?'':'sec')+'" onclick="setF(\'rat\',3)">86+</button></div>';
+for(var j=0;j<world.length;j++){var p=world[j];if(p.club===st.name)continue;
+if(filterAge===1&&p.age>21)continue;if(filterAge===2&&(p.age<22||p.age>27))continue;if(filterAge===3&&p.age<28)continue;
+if(filterRating===1&&p.rating<70)continue;if(filterRating===2&&p.rating<80)continue;if(filterRating===3&&p.rating<86)continue;
+var price=calcPrice(p);var rc=p.rating>=87?'hi':(p.rating>=78?'mid':'');
+h+='<div class="card"><div class="pr" style="border:none"><div><b>'+p.name+'</b> · '+p.club+' · '+p.age+' л</div><span class="rt '+rc+'">'+p.rating+'</span></div>';
+h+='<div class="pr" style="border:none"><span>€<b style="color:#d97706">'+price+'M</b></span><button class="btn" onclick="startNeg('+j+')">Предложить</button></div></div>'}}
+if(view==='table'){var t=tbl.slice().sort(function(a,b){return b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga)});
+h+='<div class="card"><b>Таблица · '+curLg+'</b><table><tr><th>#</th><th>Клуб</th><th>И</th><th>В</th><th>Н</th><th>П</th><th>М</th><th>О</th></tr>';
+for(var i2=0;i2<t.length;i2++){var r=t[i2];var hl=r.name===st.name?'style="color:#0d8a4e;font-weight:bold"':'';
+h+='<tr '+hl+'><td>'+(i2+1)+'</td><td>'+r.name+'</td><td>'+r.p+'</td><td>'+r.w+'</td><td>'+r.d+'</td><td>'+r.l+'</td><td>'+r.gf+':'+r.ga+'</td><td><b>'+r.pts+'</b></td></tr>'}
+h+='</table></div>'}
+if(view==='scorers'){var sc=scorers.slice().sort(function(a,b){return b.goals-a.goals}).slice(0,20);
+h+='<div class="card"><b>🥇 Бомбардиры · '+curLg+'</b><table><tr><th>#</th><th>Игрок</th><th>Клуб</th><th>Голы</th></tr>';
+for(var i3=0;i3<sc.length;i3++){var s2=sc[i3];var hl2=s2.club===st.name?'style="color:#0d8a4e;font-weight:bold"':'';
+h+='<tr '+hl2+'><td>'+(i3+1)+'</td><td>'+s2.name+'</td><td>'+s2.club+'</td><td><b>'+s2.goals+'</b></td></tr>'}
+h+='</table></div>'}
+if(view==='social'){h+='<div class="card"><b>📱 Лента</b></div>';
+if(!st.social.length)h+='<div class="card" style="text-align:center;color:#6b7280">Пока нет новостей.</div>';
+for(var i4=0;i4<st.social.length;i4++){var p2=st.social[i4];
+var cls='';if(p2.neg)cls=' neg';else if(p2.cl)cls=' cl';
+h+='<div class="post'+cls+'"><div class="meta">'+p2.author+' · тур '+p2.week+'</div>'+p2.text+'</div>'}}
+if(view==='match'){h+='<div class="card" style="text-align:center"><b>Тур '+(st.week+1)+'</b><br><br><button class="btn" style="padding:14px 28px;font-size:14px" onclick="startM()">▶ Сыграть матч</button></div>';
+if(st.week>0&&st.week%4===0)h+='<div class="card" style="text-align:center"><button class="btn" onclick="startIV()">🎤 Дать интервью</button></div>'}
+if(view==='econ'){var income=st.ticketPrice*5000;
+h+='<div class="card"><b>💵 Экономика клуба</b></div><div class="card"><b>🎫 Цена билета: €'+st.ticketPrice+'</b><br>Доход за матч: €'+(income/1000000).toFixed(1)+'M<br><br><button class="btn" onclick="setTicket(-5)">−5</button><button class="btn" onclick="setTicket(5)">+5</button><button class="btn sec" onclick="setTicket(-st.ticketPrice+30)">Сброс (30)</button></div><div class="card">⚠️ Высокие цены злят фанатов.</div>'}
+if(view==='trophies'){h+='<div class="card"><b>🏆 Зал славы</b></div>';
+if(!st.trophies.length)h+='<div class="card" style="text-align:center;color:#6b7280">Пока нет трофеев.</div>';
+for(var i5=0;i5<st.trophies.length;i5++){var tr=st.trophies[i5];
+h+='<div class="trophy">🏆 '+tr.name+' · Сезон '+tr.season+'</div>'}}
+if(view==='cup'){renderCupView();return}
+b.innerHTML=h}
+
+function setF(k,v){if(k==='age')filterAge=v;else filterRating=v;renderHub()}
+function setTicket(d){st.ticketPrice+=d;if(st.ticketPrice<10)st.ticketPrice=10;if(st.ticketPrice>200)st.ticketPrice=200;
+if(st.ticketPrice>80){st.trust=Math.max(0,st.trust-1);st.fans=Math.max(0,st.fans-2);
+pushPost("@UltraFans","💸 Билеты по €"+st.ticketPrice+"! Фанаты недовольны.",true)}
+renderHub()}  
+  function calcPrice(p){var m=1;if(lgOf(p.club)===lgOf(st.name))m*=1.4;
+if(p.age<23)m*=1.4;if(p.age>32)m*=0.6;return Math.round(p.price*m)}
+
+function startNeg(i){st.negIdx=i;st.negPrice=calcPrice(world[i]);st.negSalary=Math.round(world[i].rating*3);
+st.negRole='основной';renderNeg();show('s-neg')}
+
+function renderNeg(){var b=document.getElementById('negBody');var p=world[st.negIdx];
+var price=st.negPrice;var sal=st.negSalary;var role=st.negRole;var can=price<=st.budget;
+var h='<div class="card"><b>'+p.name+'</b><br>'+p.club+' · '+p.age+' лет · Рейтинг '+p.rating+'</div>';
+h+='<div class="card"><b>💰 Предложение</b><br>Сейчас: €<b style="color:#d97706">'+price+'M</b><br>Бюджет: €'+st.budget+'M<br><br>';
+h+='<button class="btn" onclick="negPrice(-10)">−10</button><button class="btn" onclick="negPrice(-5)">−5</button>';
+h+='<button class="btn" onclick="negPrice(5)">+5</button><button class="btn" onclick="negPrice(10)">+10</button></div>';
+h+='<div class="card"><b>💵 Зарплата: €'+sal+'K</b><br><br>';
+h+='<button class="btn '+(role==='резерв'?'':'sec')+'" onclick="negRole(\'резерв\')">Резерв</button>';
+h+='<button class="btn '+(role==='ротация'?'':'sec')+'" onclick="negRole(\'ротация\')">Ротация</button>';
+h+='<button class="btn '+(role==='основной'?'':'sec')+'" onclick="negRole(\'основной\')">Основной</button></div>';
+if(!can)h+='<div class="card" style="color:#dc2626;text-align:center;font-weight:700">Не хватает €'+(price-st.budget)+'M</div>';
+h+='<div style="text-align:center;margin-top:10px"><button class="btn full" '+(!can?'disabled':'')+' onclick="submitNeg()">📨 Отправить предложение</button>';
+h+='<button class="btn sec full" onclick="show(\'s-hub\')">Отмена</button></div>';
+b.innerHTML=h}
+
+function negPrice(d){st.negPrice+=d;if(st.negPrice<5)st.negPrice=5;renderNeg()}
+function negRole(r){st.negRole=r;renderNeg()}
+
+function submitNeg(){var p=world[st.negIdx];
+if(RIV[st.name]&&RIV[st.name].indexOf(p.club)>-1){alert("❌ "+p.club+" не продаёт игроков в "+st.name);show('s-hub');return}
+var base=calcPrice(p);var pm=st.negPrice/base;var chn=60;
+if(lgOf(p.club)===lgOf(st.name))chn-=20;if(p.rating>=89)chn-=15;
+var sal=st.negSalary;var role=st.negRole;
+if(pm>=1.3)chn+=20;else if(pm>=1.1)chn+=10;else if(pm<0.9)chn-=30;
+if(role==='основной')chn+=10;else if(role==='резерв')chn-=15;
+if(sal>=p.rating*4)chn+=10;else if(sal<p.rating*2)chn-=15;
+if(chn<5)chn=5;if(chn>90)chn=90;
+if(rnd(100)<chn){st.budget-=st.negPrice;st.players.push({name:p.name,rating:p.rating,age:p.age,goals:0});
+scorers.push({name:p.name,club:st.name,goals:0,rating:p.rating});p.club=st.name;
+pushPost("@TransferKing","✅ "+p.name+" переходит в "+st.name+" за €"+st.negPrice+"M!");
+alert("✅ ТРАНСФЕР УДАЛСЯ!\nШанс был "+chn+"%.");show('s-hub');renderHub()}
+else{pushPost("@TransferKing","❌ "+p.club+" отклонил предложение по "+p.name,true);
+alert("❌ ОТКАЗ.\nШанс был "+chn+"%.");show('s-hub');renderHub()}}
+
+function sellValue(p){var b=p.rating*p.rating*0.035;
+if(GKSET[p.name])b*=0.35;
+if(p.age>32)b*=0.4;else if(p.age>34)b*=0.2;else if(p.age<23)b*=1.3;
+return Math.round(b)}
+
+function sellMy(i){if(st.players.length<12){alert("Мало игроков в составе");return}
+st.sellIdx=i;var p=st.players[i];var value=sellValue(p);
+st.sellOffers=[];var num=1+rnd(3);
+for(var k=0;k<num;k++){var fromClubs=[];
+for(var lk in L)for(var c=0;c<L[lk].length;c++)if(L[lk][c][0]!==st.name)fromClubs.push(L[lk][c][0]);
+var from=fromClubs[rnd(fromClubs.length)];
+var isRich=RICH.indexOf(from)>-1;
+var mult=isRich?(0.9+Math.random()*0.5):(0.3+Math.random()*0.35);
+if(p.age>32)mult*=0.6;
+st.sellOffers.push({club:from,price:Math.round(value*mult)})}
+renderSell();show('s-sell')}
+
+function renderSell(){var p=st.players[st.sellIdx];
+var h='<div class="card"><b>'+p.name+'</b> · '+p.rating+' · '+p.age+' лет</div>';
+h+='<div class="card"><b>Предложения клубов:</b>';
+if(!st.sellOffers.length)h+='<div style="color:#6b7280">Нет предложений</div>';
+for(var i=0;i<st.sellOffers.length;i++){var o=st.sellOffers[i];
+h+='<div class="pr"><div><b>'+o.club+'</b></div><div style="color:#d97706;font-weight:800">€'+o.price+'M</div><button class="btn" onclick="acceptSell('+i+')">Принять</button></div>'}
+h+='</div><div style="text-align:center"><button class="btn sec full" onclick="show(\'s-hub\')">Отмена</button></div>';
+document.getElementById('sellBody').innerHTML=h}
+
+function acceptSell(oi){var o=st.sellOffers[oi];var p=st.players[st.sellIdx];
+st.budget+=o.price;
+pushPost("@TransferKing","💸 "+st.name+" продал "+p.name+" в "+o.club+" за €"+o.price+"M");
+st.players.splice(st.sellIdx,1);
+for(var i=0;i<scorers.length;i++)if(scorers[i].name===p.name&&scorers[i].club===st.name){scorers.splice(i,1);break}
+alert("✅ Продано! "+p.name+" → "+o.club+" за €"+o.price+"M");
+show('s-hub');renderHub()}
+  function autoLine(){var arr=[];for(var i=0;i<st.players.length;i++)arr.push({i:i,r:st.players[i].rating});
+arr.sort(function(a,b){return b.r-a.r});mLine=[];for(var j=0;j<Math.min(11,arr.length);j++)mLine.push(arr[j].i)}
+
+function startM(){autoLine();var all=L[curLg];var opps=[];
+for(var i=0;i<all.length;i++)if(all[i][0]!==st.name)opps.push(all[i]);
+if(!st.oppIdx)st.oppIdx=0;
+var opp=opps[st.oppIdx%opps.length];st.oppIdx++;
+mOpp=opp[0];mOppStr=opp[1];mOppSq=SQ[mOpp]||[];
+if(!mOppSq.length){mOppSq=[];for(var k=0;k<5;k++)mOppSq.push(["Игрок "+(k+1),70+rnd(15)])}
+var sum=0;for(var j=0;j<mLine.length;j++)sum+=st.players[mLine[j]].rating;
+mMyStr=mLine.length?sum/mLine.length:70;
+mMin=1;mMy=0;mTh=0;mPause=false;window._cup=false;
+document.getElementById('mTeams').textContent=st.name+' vs '+mOpp;
+document.getElementById('mScore').textContent='0 — 0';document.getElementById('mMin').textContent="1'";
+document.getElementById('mEvents').innerHTML='<div class="ev i">⚽ Матч начался!</div>';
+document.getElementById('mActions').innerHTML='';show('s-match');tick()}
+
+function tick(){if(mPause)return;mMin++;document.getElementById('mMin').textContent=mMin+"'";
+var ratio=mMyStr/mOppStr;
+var myChance=0.007*Math.min(ratio,1.7);var opChance=0.007*Math.min(1/ratio,1.7);
+if(mMy>=4)myChance*=0.3;if(mTh>=4)opChance*=0.3;
+if(Math.random()<myChance){var cands=[];for(var i=0;i<mLine.length;i++){var pl=st.players[mLine[i]];if(!GKSET[pl.name])cands.push(pl)}
+var p=cands.length?cands[rnd(cands.length)]:st.players[mLine[0]];
+if(p&&!GKSET[p.name]){p.goals++;mMy++;document.getElementById('mScore').textContent=mMy+' — '+mTh;
+addEv('g','⚽ ГОЛ! '+p.name+" "+mMin+"'")}}
+if(Math.random()<opChance){mTh++;document.getElementById('mScore').textContent=mMy+' — '+mTh;
+var opCands=[];for(var k=0;k<mOppSq.length;k++){if(!GKSET[mOppSq[k][0]])opCands.push(mOppSq[k])}
+var op=opCands.length?opCands[rnd(opCands.length)]:mOppSq[0];
+addEv('o','⚽ Гол! '+op[0]+' ('+mOpp+') '+mMin+"'")}
+if(mMin===45){mPause=true;addEv('i','⏸ Перерыв '+mMy+' — '+mTh);
+document.getElementById('mActions').innerHTML='<button class="btn" onclick="contM()">▶ 2-й тайм</button>';return}
+if(mMin>=90){endM();return}timer=setTimeout(tick,80+rnd(120))}
+
+function contM(){mPause=false;document.getElementById('mActions').innerHTML='';addEv('i','▶ 2-й тайм');tick()}
+function addEv(c,t){var d=document.createElement('div');d.className='ev '+c;d.textContent=t;var e=document.getElementById('mEvents');e.insertBefore(d,e.firstChild)}
+
+function endM(){clearTimeout(timer);addEv('i','🏁 Матч окончен: '+mMy+' — '+mTh);
+if(window._cup){window._cup=false;afterCupMatch();return}
+st.week++;st.goals+=mMy;st.conc+=mTh;
+var income=(st.ticketPrice*5000)/1000000;st.budget+=Math.round(income*10)/10;
+for(var i=0;i<tbl.length;i++){var r=tbl[i];
+if(r.name===st.name){r.p++;r.gf+=mMy;r.ga+=mTh;if(mMy>mTh){r.w++;r.pts+=3}else if(mMy===mTh){r.d++;r.pts++}else{r.l++}}
+else if(r.name===mOpp){r.p++;r.gf+=mTh;r.ga+=mMy;if(mTh>mMy){r.w++;r.pts+=3}else if(mTh===mMy){r.d++;r.pts++}else{r.l++}}
+else{var a=rnd(4),b=rnd(4);r.p++;r.gf+=a;r.ga+=b;if(a>b){r.w++;r.pts+=3}else if(a===b){r.d++;r.pts++}else{r.l++}}}
+for(var s=0;s<st.players.length;s++){var mp=st.players[s];
+if(mp.goals>0){var found=false;
+for(var kk=0;kk<scorers.length;kk++){if(scorers[kk].name===mp.name&&scorers[kk].club===st.name){found=true;break}}
+if(!found)scorers.push({name:mp.name,club:st.name,goals:mp.goals,rating:mp.rating});
+else for(var kk2=0;kk2<scorers.length;kk2++)if(scorers[kk2].name===mp.name&&scorers[kk2].club===st.name){scorers[kk2].goals=mp.goals;break}}}
+for(var k=0;k<12;k++){var sc=scorers[rnd(scorers.length)];
+if(sc&&sc.club!==st.name&&sc.rating>=78)sc.goals++}
+if(mMy>mTh){st.trust=Math.min(100,st.trust+3);st.budget+=2;pushPost("@SportsDaily","✅ "+st.name+" обыграл "+mOpp+" "+mMy+":"+mTh,false)}
+else if(mMy<mTh){st.trust=Math.max(0,st.trust-4);pushPost("@PressZone","❌ "+st.name+" уступил "+mOpp+" "+mTh+":"+mMy,true)}
+else pushPost("@SportsDaily","➖ "+st.name+" — "+mOpp+" "+mMy+":"+mTh,false);
+genPosts(2+rnd(2));
+document.getElementById('mActions').innerHTML='<button class="btn full" onclick="backH()">← В хаб</button>'}
+
+function backH(){clearTimeout(timer);renderHub();show('s-hub')}
+
+// ЕВРОКУБОК
+function startCup(){
+if(!mCup){alert("Клуб не участвует в еврокубках");return}
+if(!st.cup){
+var pool=[];
+for(var lk in L)for(var c=0;c<L[lk].length;c++){
+if(L[lk][c][0]!==st.name&&cupOf(L[lk][c][1])===mCup)pool.push({name:L[lk][c][0],str:L[lk][c][1],league:lk})}
+pool.sort(function(a,b){return b.str-a.str});
+var opps=[];var myLgCount=0;
+for(var i=0;i<pool.length&&opps.length<8;i++){
+var p=pool[i];
+if(p.league===curLg){if(myLgCount>=1)continue;myLgCount++}
+opps.push(p)}
+while(opps.length<8&&pool.length>opps.length){var p2=pool[rnd(pool.length)];var has=false;
+for(var j=0;j<opps.length;j++)if(opps[j].name===p2.name)has=true;
+if(!has)opps.push(p2)}
+st.cup={stage:'group',round:0,opps:opps.slice(0,8),pts:0,bracket:[],finalRank:0,koStage:'',champion:false};
+pushPost("@ChampionsLeague","🏆 "+st.name+" узнал соперников в "+mCup+"!",false,true)}
+if(st.cup.stage==='group'&&st.cup.round>=8){finishGroup();return}
+if(st.cup.stage==='ko'){renderCupView();return}
+var opp=st.cup.opps[st.cup.round];
+playCupMatch(opp)}
+
+function playCupMatch(opp){
+autoLine();
+mOpp=opp.name;mOppStr=opp.str;mOppSq=SQ[opp.name]||[];
+if(!mOppSq.length){mOppSq=[];for(var k=0;k<5;k++)mOppSq.push(["Игрок "+(k+1),70+rnd(15)])}
+var sum=0;for(var j=0;j<mLine.length;j++)sum+=st.players[mLine[j]].rating;
+mMyStr=mLine.length?sum/mLine.length:70;
+mMin=1;mMy=0;mTh=0;mPause=false;window._cup=true;
+document.getElementById('mTeams').textContent=st.name+' vs '+mOpp+' · '+mCup;
+document.getElementById('mScore').textContent='0 — 0';document.getElementById('mMin').textContent="1'";
+document.getElementById('mEvents').innerHTML='<div class="ev i">🏆 '+mCup+' · матч '+(st.cup?st.cup.round+1:1)+'</div>';
+document.getElementById('mActions').innerHTML='';show('s-match');tick()}
+
+function afterCupMatch(){var c=st.cup;var won=mMy>mTh;
+if(c.stage==='group'){
+if(won)c.pts+=3;else if(mMy===mTh)c.pts+=1;
+c.round++;
+if(c.round>=8){finishGroup();return}
+renderHub()}
+else if(c.stage==='ko'){
+if(!won){c.stage='done';c.champion=false;
+pushPost("@ChampionsLeague","❌ "+st.name+" вылетел из "+mCup,true,true);renderHub();return}
+if(c.koStage==='r16')c.koStage='qf';
+else if(c.koStage==='qf')c.koStage='sf';
+else if(c.koStage==='sf')c.koStage='final';
+else if(c.koStage==='final'){
+c.stage='done';c.champion=true;
+st.trophies.push({name:mCup,season:1});
+var prize=mCup==="Лига Чемпионов"?30:15;st.budget+=prize;
+pushPost("@ChampionsLeague","🏆🏆 "+st.name+" ВЫИГРАЛ "+mCup+"!!! +€"+prize+"M",false,true);
+alert("🏆🏆🏆 ПОБЕДА В "+mCup.toUpperCase()+"!!!\nПризовые: €"+prize+"M");
+renderHub();return}
+var pool=[];
+for(var lk in L)for(var cc=0;cc<L[lk].length;cc++){
+if(L[lk][cc][0]!==st.name&&cupOf(L[lk][cc][1])===mCup)pool.push({name:L[lk][cc][0],str:L[lk][cc][1]})}
+pool.sort(function(a,b){return b.str-a.str});
+var idx=0;
+if(c.koStage==='qf')idx=Math.floor(pool.length/4);
+else if(c.koStage==='sf')idx=Math.floor(pool.length/3);
+else idx=Math.floor(pool.length/4);
+var next=pool[idx+rnd(3)]||pool[0];
+c.bracket.push(next);
+pushPost("@ChampionsLeague","✅ "+st.name+" прошёл! Соперник: "+next.name,false,true);
+renderHub()}}
+
+function finishGroup(){var c=st.cup;
+var teamTable=[{name:st.name,pts:c.pts}];
+for(var i=0;i<c.opps.length;i++){var o=c.opps[i];teamTable.push({name:o.name,pts:rnd(4)})}
+teamTable.sort(function(a,b){return b.pts-a.pts});
+for(var j=0;j<teamTable.length;j++)if(teamTable[j].name===st.name){c.finalRank=j+1;break}
+if(c.finalRank<=8)c.koStage='r16';
+else if(c.finalRank<=16)c.koStage='playoff';
+else c.koStage='out';
+c.stage='ko';
+pushPost("@ChampionsLeague","📊 "+st.name+" финишировал на "+c.finalRank+" месте в группе! Очки: "+c.pts,false,true);
+if(c.koStage==='r16'){
+var pool=[];
+for(var lk in L)for(var cc=0;cc<L[lk].length;cc++){
+if(L[lk][cc][0]!==st.name&&cupOf(L[lk][cc][1])===mCup)pool.push({name:L[lk][cc][0],str:L[lk][cc][1]})}
+pool.sort(function(a,b){return b.str-a.str});
+var idx=Math.floor(pool.length*0.66);
+c.bracket.push(pool[idx+rnd(3)]||pool[pool.length-1])}
+else if(c.koStage==='playoff'){
+var pool2=[];
+for(var lk2 in L)for(var cc2=0;cc2<L[lk2].length;cc2++){
+if(L[lk2][cc2][0]!==st.name&&cupOf(L[lk2][cc2][1])===mCup)pool2.push({name:L[lk2][cc2][0],str:L[lk2][cc2][1]})}
+pool2.sort(function(a,b){return b.str-a.str});
+c.bracket.push(pool2[rnd(3)]||pool2[0])}
+renderHub()}
+
+function playKO(){var c=st.cup;if(!c.bracket.length)return;
+var opp=c.bracket[c.bracket.length-1];playCupMatch(opp)}
+
+function renderCupView(){
+var b=document.getElementById('hubView');var h='';
+if(!mCup){h+='<div class="card" style="text-align:center;color:#6b7280">Клуб не участвует в еврокубках.<br>Нужен рейтинг 70+.</div>';b.innerHTML=h;return}
+var c=st.cup;
+h+='<div class="card" style="text-align:center"><b style="color:#b45309;font-size:15px">🏆 '+mCup+'</b></div>';
+if(!c){h+='<div class="card" style="text-align:center">Готов начать групповой этап?<br><br><button class="btn" onclick="startCup()">▶ Начать еврокубок</button></div>';b.innerHTML=h;return}
+if(c.stage==='group'){
+h+='<div class="card">Тур '+(c.round+1)+'/8 · Очки: <b style="color:#0d8a4e">'+c.pts+'</b></div>';
+h+='<div class="card">Соперники:';
+for(var i=0;i<c.opps.length;i++){var o=c.opps[i];var done=i<c.round;
+h+='<div class="pr"><div>'+(i+1)+'. '+o.name+' ('+o.str+')</div><div>'+(done?'✅':'⌛')+'</div></div>'}
+h+='</div>';
+if(c.round>=8)h+='<div style="text-align:center"><button class="btn" onclick="startCup()">▶ Завершить группу</button></div>';
+else h+='<div style="text-align:center"><button class="btn" onclick="startCup()">▶ Матч группы</button></div>'}
+else if(c.stage==='ko'&&c.koStage!=='out'){
+h+='<div class="card">Место: <b>'+c.finalRank+'</b> · Стадия: <b style="color:#0d8a4e">'+(c.koStage==='r16'?'1/8':(c.koStage==='qf'?'1/4':(c.koStage==='sf'?'1/2':(c.koStage==='final'?'ФИНАЛ':'Стыковые'))))+'</b></div>';
+if(c.bracket&&c.bracket.length){var cur=c.bracket[c.bracket.length-1];
+h+='<div class="card">Соперник: <b>'+cur.name+'</b> ('+cur.str+')</div>'}
+h+='<div style="text-align:center"><button class="btn" onclick="playKO()">▶ Играть</button></div>'}
+else if(c.stage==='ko'&&c.koStage==='out'){h+='<div class="card" style="text-align:center">❌ Вылетел. Место '+c.finalRank+'</div>'}
+else if(c.stage==='done'){h+='<div class="card" style="text-align:center;font-size:16px;font-weight:800">'+(c.champion?'🏆 ЧЕМПИОН '+mCup+'!':'Вылет')+'</div>'}
+b.innerHTML=h}
+
+function startIV(){var q=IVQ[rnd(IVQ.length)];
+var h='<div class="card"><p class="q">'+q.q+'</p>';
+for(var i=0;i<q.a.length;i++){var a=q.a[i];
+h+='<button class="btn full" style="text-align:left;margin:5px 0" onclick="ansIV('+i+')">'+a.t+'</button>'}
+h+='</div>';
+document.getElementById('ivBody').innerHTML=h;window._ivQ=q;show('s-iv')}
+
+function ansIV(i){var q=window._ivQ;var a=q.a[i];
+st.trust=Math.max(0,Math.min(100,st.trust+a.tru));
+st.fans=Math.max(0,Math.min(100,st.fans+a.fan));
+pushPost("@PressZone","🎤 Тренер "+st.name+": «"+a.t+"»");
+alert("Готово! Доверие: "+st.trust+"%, Фанаты: "+st.fans+"%");
+show('s-hub');renderHub()}
+
+show('s-menu');
+</script>
+</body>
+</html>
